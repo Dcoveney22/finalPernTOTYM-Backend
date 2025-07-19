@@ -2,6 +2,7 @@ import bodyParser from "body-parser";
 import express from "express";
 import cardRouter from "./routes/cards.js";
 import tradesRouter from "./routes/trades.js";
+import cors from "cors";
 import authRouter from "./routes/auth.js";
 import collectionRouter from "./routes/collection.js";
 import passport from "passport";
@@ -12,6 +13,12 @@ const app = express();
 const PORT = 5000;
 // app.use(bodyParser.json());
 app.use(express.json());
+app.use(
+  cors({
+    origin: "http://localhost:5173",
+    credentials: true,
+  })
+);
 
 app.use(
   session({
