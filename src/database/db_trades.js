@@ -28,6 +28,14 @@ export const getTradesByUser = async (user_id) => {
   );
 };
 
+export const getTradesByUserID = async (user_id) => {
+  const result = await pool.query(
+    "SELECT * FROM totym_card_trades_table WHERE user_id = $1",
+    [user_id]
+  );
+  return result.rows;
+};
+
 export const addCardToTrade = async (cardData, user_id) => {
   const fullCardInfo = await pool.query(
     "SELECT * FROM totym_card_main_table WHERE relic_number = $1",
@@ -50,4 +58,10 @@ export const addCardToTrade = async (cardData, user_id) => {
     ]
   );
   return cardToAdd.rows[0];
+};
+
+export const getCommunityTrades = async () => {
+  const result = await pool.query("SELECT * FROM totym_card_trades_table");
+
+  return result.rows;
 };

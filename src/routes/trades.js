@@ -3,6 +3,7 @@ import {
   addCardToTrade,
   getTrades,
   getTradesByUser,
+  getTradesByUserID,
 } from "../database/db_trades.js";
 import passport from "passport";
 import "../config/passportConfig.js";
@@ -27,12 +28,35 @@ router.get(
     }
   }
 );
-
+// get by userID
 router.get(
   "/:user_id",
   passport.authenticate("jwt", { session: false }),
   async (req, res, next) => {
     const user_id = await req.params.user_id;
+    const tradesByUser = await getTradesByUserID(user_id);
+
+    if (tradesByUser && tradesByUser.length === 0) {
+      res.status(200).send({ message: "this user has no trades available" });
+      return;
+    }
+    if (tradesByUser) {
+      res.status(200).json(tradesByUser);
+    } else {
+      res.status(401).send({
+        message: "There was an error getting the trades from this user",
+      });
+    }
+  }
+);
+
+// get by user JWT
+
+router.get(
+  "/",
+  passport.authenticate("jwt", { session: false }),
+  async (req, res, next) => {
+    const user_id = await req.user_id;
     const tradesByUser = await getTradesByUser(user_id);
 
     if (tradesByUser === 0) {

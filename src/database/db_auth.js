@@ -29,18 +29,19 @@ export const registerNewUser = async (data) => {
   const newHashPassword = await bcrypt.hash(userPassword, saltRounds);
 
   const addNewUser = await pool.query(
-    "INSERT INTO totym_user_main_table (community_name, email, first_name, last_name, phone_number, date_created, hashed_password, first_line_address, city_address, postcode_address) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) RETURNING *",
+    "INSERT INTO totym_user_main_table (first_name, last_name, community_name, email, first_line_address, city_address, postcode_address, profile_img, address_region, hashed_password, date_created) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11) RETURNING *",
     [
-      data.community_name,
-      data.email,
       data.first_name,
       data.last_name,
-      data.phone_number,
-      data.date_created,
-      newHashPassword,
+      data.community_name,
+      data.email,
       data.first_line_address,
       data.city_address,
       data.postcode_address,
+      data.profile_img,
+      data.address_region,
+      newHashPassword,
+      data.date_created,
     ]
   );
   return addNewUser.rows[0];

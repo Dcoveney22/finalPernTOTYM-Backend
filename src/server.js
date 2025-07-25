@@ -5,6 +5,8 @@ import tradesRouter from "./routes/trades.js";
 import cors from "cors";
 import authRouter from "./routes/auth.js";
 import collectionRouter from "./routes/collection.js";
+import communityRouter from "./routes/community.js";
+import userRouter from "./routes/users.js";
 import passport from "passport";
 import session from "express-session";
 import "./config/passportConfig.js";
@@ -34,6 +36,8 @@ app.use(passport.session());
 app.use("/cards", cardRouter);
 app.use("/trades", tradesRouter);
 app.use("/collection", collectionRouter);
+app.use("/communityTrades", communityRouter);
+app.use("/users", userRouter);
 app.use("/", authRouter);
 
 app.listen(PORT, () =>

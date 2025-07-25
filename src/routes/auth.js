@@ -9,7 +9,9 @@ router.post("/register", async (req, res, next) => {
   try {
     const initialCheck = await checkUser(req.body);
     if (initialCheck.rows.length > 0) {
-      return res.status(409).send({ message: "User already exists" });
+      return res
+        .status(409)
+        .send({ status: 409, message: "User already exists" });
     }
     const registration = await registerNewUser(req.body);
     if (registration) {
@@ -22,15 +24,23 @@ router.post("/register", async (req, res, next) => {
   }
 });
 
-router.post("/login", passport.authenticate("local"), (req, res) => {
-  console.log(req.body);
-  const jwtObject = issueJWT(req.user);
-  res.json({
-    message: "Login succesful",
-    user: req.user,
-    token: jwtObject.token,
-    expires: jwtObject.expires,
-  });
+router.post("/login", (req, res, next) => {
+  passport.authenticate("local", (err, user, info) => {
+    if (err) return next(err);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    console.log("user object", user);
+
+    console.log(req.body);
+    const jwtObject = issueJWT(user);
+    res.json({
+      message: "Login succesful",
+      user: req.user,
+      token: jwtObject.token,
+      expires: jwtObject.expires,
+    });
+  })(req, res, next);
 });
 
 export default router;
