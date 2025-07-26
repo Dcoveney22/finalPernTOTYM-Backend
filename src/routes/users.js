@@ -26,4 +26,19 @@ router.get(
   }
 );
 
+router.get(
+  "/profile/myProfile",
+  passport.authenticate("jwt", { session: false }),
+
+  async (req, res, next) => {
+    const user_id = req.user.id;
+    const myProfile = await getUsers(user_id);
+
+    if (!myProfile || myProfile.length === 0) {
+      return res.status(200).send({ message: "This profile doesn't exist" });
+    }
+    return res.status(200).json(myProfile);
+  }
+);
+
 export default router;

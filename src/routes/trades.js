@@ -1,6 +1,7 @@
 import express from "express";
 import {
   addCardToTrade,
+  deleteTradeLine,
   getTrades,
   getTradesByUser,
   getTradesByUserID,
@@ -30,7 +31,7 @@ router.get(
 );
 // get by userID
 router.get(
-  "/:user_id",
+  "/byUser/:user_id",
   passport.authenticate("jwt", { session: false }),
   async (req, res, next) => {
     const user_id = await req.params.user_id;
@@ -53,22 +54,20 @@ router.get(
 // get by user JWT
 
 router.get(
-  "/",
+  "/myTrades",
   passport.authenticate("jwt", { session: false }),
   async (req, res, next) => {
-    const user_id = await req.user_id;
+    const user_id = await req.user.id;
+    console.log(req.user.id);
+
     const tradesByUser = await getTradesByUser(user_id);
 
-    if (tradesByUser === 0) {
-      res.status(200).send({ message: "this user has no trades available" });
+    if (!tradesByUser || tradesByUser.length === 0) {
+      return res
+        .status(200)
+        .send({ message: "this user has no trades available" });
     }
-    if (tradesByUser) {
-      res.status(200).json(tradesByUser);
-    } else {
-      res.status(401).send({
-        message: "There was an error getting the trades from this user",
-      });
-    }
+    return res.status(200).json(tradesByUser);
   }
 );
 
@@ -86,4 +85,19 @@ router.post(
     }
   }
 );
+
+router.delete(
+  "/delete/:trade_line_id",
+  passport.authenticate("jwt", { session: false }),
+  async (req, res, next) => {
+    try {
+      const trade_line_id = req.params.trade_line_id;
+      const deleteLine = deleteTradeLine(trade_line_id);
+      res.json(deleteLine);
+    } catch (error) {
+      next(error);
+    }
+  }
+);
+
 export default router;

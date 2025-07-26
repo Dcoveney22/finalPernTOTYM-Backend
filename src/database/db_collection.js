@@ -47,3 +47,11 @@ export const viewCollection = async (user_id) => {
   );
   return getCollection.rows;
 };
+
+export const deleteCollectionLine = async (collection_line_id) => {
+  const deleteCollection = await pool.query(
+    "DELETE FROM totym_user_collection_table WHERE collection_line_id = $1",
+    [collection_line_id]
+  );
+  return deleteCollection.rows;
+};

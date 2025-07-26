@@ -26,9 +26,12 @@ export const getTradesByUser = async (user_id) => {
     "SELECT * FROM totym_card_trades_table WHERE user_id = $1",
     [user_id]
   );
+  return result.rows;
 };
 
 export const getTradesByUserID = async (user_id) => {
+  console.log("user_id in getTradesByUser:", user_id);
+
   const result = await pool.query(
     "SELECT * FROM totym_card_trades_table WHERE user_id = $1",
     [user_id]
@@ -64,4 +67,12 @@ export const getCommunityTrades = async () => {
   const result = await pool.query("SELECT * FROM totym_card_trades_table");
 
   return result.rows;
+};
+
+export const deleteTradeLine = async (trade_line_id) => {
+  const deleteTradeLine = await pool.query(
+    "DELETE FROM totym_card_trades_table WHERE trade_line_id = $1",
+    [trade_line_id]
+  );
+  return deleteTradeLine.rows;
 };
