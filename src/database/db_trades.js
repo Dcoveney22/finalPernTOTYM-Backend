@@ -48,12 +48,13 @@ export const addCardToTrade = async (cardData, user_id) => {
   const cardDetails = fullCardInfo.rows[0];
   const addedDate = new Date();
   const cardToAdd = await pool.query(
-    "INSERT INTO totym_card_trades_table (relic_number, date_added, creature, card_name, extra_description, class, origin, user_id) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)",
+    "INSERT INTO totym_card_trades_table (relic_number, date_added, creature, card_name, quantity, extra_description, class, origin, user_id) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)",
     [
       cardDetails.relic_number,
       addedDate,
       cardDetails.creature,
       cardDetails.card_name,
+      cardData.quantity,
       cardDetails.extra_description,
       cardDetails.class,
       cardDetails.origin,
